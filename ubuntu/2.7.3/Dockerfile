@@ -5,18 +5,16 @@ ENV DEBIAN_PRIORITY critical
 
 RUN apt-get -q --no-allow-insecure-repositories update \
    && apt-get install --assume-yes --no-install-recommends \
-        ca-certificates=20180409 \
-        cabal-install=1.24.0.2-2 \
-        cpp \
-        curl \
-        fakeroot \
-        gcc \
-        ghc \
-        libgmp-dev \
-        liblua5.3-dev \
-        pkg-config \
-        make \
-        zlib1g-dev \
+        build-essential=12.4* \
+        ca-certificates=* \
+        cabal-install=1.24.* \
+        curl=7.58.* \
+        fakeroot=1.22-* \
+        ghc=8.0.2* \
+        libgmp-dev=2:6.1.* \
+        liblua5.3-dev=5.3.3* \
+        pkg-config=0.29.1* \
+        zlib1g-dev=1:1.2.11.* \
     && rm -rf /var/lib/apt/lists/*
 
 RUN cabal update \
@@ -52,17 +50,20 @@ LABEL org.pandoc.maintainer='Albert Krewinkel <albert+pandoc@zeitkraut.de>'
 LABEL org.pandoc.author "John MacFarlane"
 LABEL org.pandoc.version "2.7.3"
 
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_PRIORITY critical
+
 COPY --from=bionic-pandoc-build /usr/bin/pandoc* /usr/bin/
 RUN apt-get -q --no-allow-insecure-repositories update \
   && apt-get install --assume-yes --no-install-recommends \
-       ca-certificates=20180409 \
-       liblua5.3-0=5.3.3-1ubuntu0.18.04.1 \
-       lua-lpeg=1.0.0-2 \
-       libatomic1=8.3.0-6ubuntu1~18.04.1 \
-       libgmp10=2:6.1.2+dfsg-2 \
-       libpcre3=2:8.39-9 \
-       libyaml-0-2=0.1.7-2ubuntu3 \
-       zlib1g=1:1.2.11.dfsg-0buntu2 \
+       ca-certificates=* \
+       liblua5.3-0=5.3.3* \
+       lua-lpeg=1.0.* \
+       libatomic1=8.3.* \
+       libgmp10=2:6.1.* \
+       libpcre3=2:8.39-* \
+       libyaml-0-2=0.1.* \
+       zlib1g=1:1.2.11.* \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workdir
