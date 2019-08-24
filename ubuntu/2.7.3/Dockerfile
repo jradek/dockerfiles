@@ -10,7 +10,8 @@ RUN apt-get -q --no-allow-insecure-repositories update \
        software-properties-common \
   && add-apt-repository ppa:hvr/ghc \
   && apt-get install --assume-yes --no-install-recommends \
-        ghc-8.6.5 cabal-install-2.4 \
+        ghc-8.6.5=* \
+        cabal-install-2.4=* \
         build-essential=12.4* \
         ca-certificates=* \
         curl=7.58.* \
@@ -23,20 +24,18 @@ RUN apt-get -q --no-allow-insecure-repositories update \
   && ln -s /opt/ghc/bin/ghc-8.6.5 /usr/bin/ghc \
   && ln -s /opt/cabal/bin/cabal-2.4 /usr/bin/cabal
 
-# NOTE: --ghc-options -j +RTS -A128m -n2m -RTS, see:
-# https://rybczak.net/2016/03/26/how-to-reduce-compilation-times-of-haskell-projects/
+COPY cabal.root.config /root/.cabal/config
 RUN cabal --version \
   && ghc --version \
   && cabal new-update
 
 RUN cabal new-install \
-           --flag embed_data_files \
-           --flag bibutils \
-           --constraint 'hslua +system-lua +pkg-config +hardcode-reg-keys' \
-           --symlink-bindir="${HOME}/.cabal/bin" \
-           --disable-debug-info --enable-executable-stripping \
-           # --ghc-options '-O1 -optc-Os -optl=-pthread -fPIC -j +RTS -A128m -n2m -RTS' \
-           pandoc-2.7.3 pandoc-citeproc pandoc-crossref
+      --flag embed_data_files \
+      --flag bibutils \
+      --constraint 'hslua +system-lua +pkg-config +hardcode-reg-keys' \
+      --symlink-bindir="${HOME}/.cabal/bin" \
+      --disable-debug-info --enable-executable-stripping \
+      pandoc-2.7.3 pandoc-citeproc-0.16.2 pandoc-crossref-0.3.4.1
 RUN find "${HOME}/.cabal" -name 'pandoc*' -type f -perm -u=x -exec cp '{}' /usr/bin/ ';'
 
 # Cabal's exec stripping doesn't seem to work reliably, so let's do it again.
@@ -66,4 +65,6 @@ RUN apt-get -q --no-allow-insecure-repositories update \
        zlib1g=1:1.2.11.* \
   && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workdir
+WORKDIR /data
+
+ENTRYPOINT ["pandoc"]
