@@ -36,10 +36,12 @@ RUN cabal new-install \
            --flag bibutils \
            --constraint 'hslua +system-lua +pkg-config +hardcode-reg-keys' \
            --symlink-bindir="${HOME}/.cabal/bin" \
+           --disable-debug-info --enable-executable-stripping \
            # --ghc-options '-O1 -optc-Os -optl=-pthread -fPIC -j +RTS -A128m -n2m -RTS' \
-           pandoc pandoc-citeproc
+           pandoc pandoc-citeproc pandoc-crossref
 RUN find "${HOME}/.cabal" -name 'pandoc*' -type f -perm -u=x -exec cp '{}' /usr/bin/ ';'
 
+# Cabal's exec stripping doesn't seem to work reliably, so let's do it again.
 RUN strip /usr/bin/pandoc /usr/bin/pandoc-citeproc
 
 
