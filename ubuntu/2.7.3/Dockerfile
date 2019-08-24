@@ -5,18 +5,19 @@ ENV DEBIAN_PRIORITY critical
 
 WORKDIR /app
 
+# hadolint ignore=DL3008
 RUN apt-get -q --no-allow-insecure-repositories update \
   && apt-get install --assume-yes --no-install-recommends \
        software-properties-common \
   && add-apt-repository ppa:hvr/ghc \
   && apt-get install --assume-yes --no-install-recommends \
-        ghc-8.6.5=* \
-        cabal-install-2.4=* \
+        ghc-8.6.5 \
+        cabal-install-2.4 \
         build-essential=12.4* \
-        ca-certificates=* \
-        curl=7.58.* \
-        fakeroot=1.22-* \
-        libgmp-dev=2:6.1.* \
+        ca-certificates \
+        curl \
+        fakeroot \
+        libgmp-dev \
         liblua5.3-dev=5.3.3* \
         pkg-config=0.29.1* \
         zlib1g-dev=1:1.2.11.* \
